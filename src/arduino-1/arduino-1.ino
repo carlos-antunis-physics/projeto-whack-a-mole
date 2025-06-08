@@ -33,7 +33,7 @@ SoftwareSerial link(11, 10);
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 //  tempo maximo de uma partida
-const unsigned long int tempoMaximo = 1000 /*ms*/;
+const unsigned long int tempoMaximo = 60000 /*ms*/;
 //  tempo maximo de espera de um botao
 const unsigned long int tempoBotao  = 2000  /*ms*/;
 
@@ -466,8 +466,8 @@ void jogoGenius1P()
         } else {
           acertou = false;
           somErro();
-          break;
           pontuacao = 0u; //  reiniciar pontuação
+          break;
         }
       }
     }

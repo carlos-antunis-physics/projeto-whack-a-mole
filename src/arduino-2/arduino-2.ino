@@ -168,9 +168,7 @@ void escolherModo()
   lcd.print("aguardando");
   lcd.setCursor(1, 1);
   lcd.print("adversario ...");
-  while (!link.available())
-  { /*aguarde*/
-  }
+  while (!link.available()) {/*aguarde*/}
   modo[adversario] = link.read();
 
   lcd.clear();
