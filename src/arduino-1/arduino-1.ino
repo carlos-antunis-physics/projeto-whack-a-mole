@@ -280,23 +280,22 @@ void jogoTradicional1P()
   lcd.print("tradicional");
   delay(1500);
 
-  unsigned int pontuacao = 0;
-  char pontuacaoString[16];
-  sprintf(pontuacaoString, "%u", pontuacao);
+  int pontuacao = 0;
   lcd.clear();
   lcd.setCursor(3, 0);
   lcd.print("Pontuacao");
   lcd.setCursor(7, 1);
-  lcd.print(pontuacaoString);
+  lcd.print("0");
   delay(100);
-
+  
   //  enquanto houver tempo execute o jogo
+  char pontuacaoString[16];
   bool acertou;
   int botaoEscolhido;
   unsigned long int tTurno, tempoInicial = millis();
   while (millis() - tempoInicial < tempoMaximo) {
     //  escolher um botão aleatório
-    botaoEscolhido = random(0, 4);
+    botaoEscolhido = random(0, 3);
     digitalWrite(pinoLed[botaoEscolhido], HIGH);
     acertou = false;
 
@@ -317,7 +316,7 @@ void jogoTradicional1P()
     if (!acertou) {
       somErro();
     } else {
-      sprintf(pontuacaoString, "%u", pontuacao);
+      sprintf(pontuacaoString, "%d", pontuacao);
       lcd.clear();
       lcd.setCursor(3, 0);
       lcd.print("Pontuacao");
@@ -333,7 +332,7 @@ void jogoTradicional1P()
   lcd.print("Fim de jogo");
   delay(2000);
 
-  sprintf(pontuacaoString, "%u", pontuacao);
+  sprintf(pontuacaoString, "%d", pontuacao);
   lcd.clear();
   lcd.setCursor(3, 0);
   lcd.print("Pontuacao");
@@ -351,24 +350,23 @@ void jogoProgressivo1P()
   lcd.print("progressivo");
   delay(1500);
 
-  unsigned int pontuacao = 0;
-  char pontuacaoString[16];
-  sprintf(pontuacaoString, "%u", pontuacao);
+  int pontuacao = -1;
   lcd.clear();
   lcd.setCursor(3, 0);
   lcd.print("Pontuacao");
   lcd.setCursor(7, 1);
-  lcd.print(pontuacaoString);
+  lcd.print("0");
   delay(100);
-
+  
   //  enquanto houver tempo execute o jogo
+  char pontuacaoString[16];
   bool acertou;
   int botaoEscolhido;
   unsigned long tempoBotaoProgresivo = tempoBotao;
   unsigned long int tTurno, tempoInicial = millis();
   while (millis() - tempoInicial < tempoMaximo) {
     //  escolher um botão aleatório
-    botaoEscolhido = random(0, 4);
+    botaoEscolhido = random(0, 3);
     digitalWrite(pinoLed[botaoEscolhido], HIGH);
     acertou = false;
 
@@ -394,7 +392,7 @@ void jogoProgressivo1P()
     if (!acertou) {
       somErro();
     } else {
-      sprintf(pontuacaoString, "%u", pontuacao);
+      sprintf(pontuacaoString, "%d", pontuacao);
       lcd.clear();
       lcd.setCursor(3, 0);
       lcd.print("Pontuacao");
@@ -410,7 +408,7 @@ void jogoProgressivo1P()
   lcd.print("Fim de jogo");
   delay(2000);
 
-  sprintf(pontuacaoString, "%u", pontuacao);
+  sprintf(pontuacaoString, "%d", pontuacao);
   lcd.clear();
   lcd.setCursor(3, 0);
   lcd.print("Pontuacao");
@@ -445,7 +443,7 @@ void jogoGenius1P()
   unsigned long int tTurno, tempoInicial = millis();
   while (millis() - tempoInicial < 2 * tempoMaximo && maiorPontuacao < pontuacaoMaxima) {
     //  escolher um botão aleatório
-    botaoEscolhido[pontuacao] = random(0, 4);
+    botaoEscolhido[pontuacao] = random(0, 3);
     for (i = 0; i < pontuacao + 1; i++) {
       digitalWrite(pinoLed[botaoEscolhido[i]], HIGH);
       delay(1000 /*ms*/);
