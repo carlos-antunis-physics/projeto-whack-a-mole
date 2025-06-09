@@ -18,14 +18,105 @@
 #include <SoftwareSerial.h>
 #include <LiquidCrystal_I2C.h>
 
+#define NOTE_B0  31
+#define NOTE_C1  33
+#define NOTE_CS1 35
+#define NOTE_D1  37
+#define NOTE_DS1 39
+#define NOTE_E1  41
+#define NOTE_F1  44
+#define NOTE_FS1 46
+#define NOTE_G1  49
+#define NOTE_GS1 52
+#define NOTE_A1  55
+#define NOTE_AS1 58
+#define NOTE_B1  62
+#define NOTE_C2  65
+#define NOTE_CS2 69
+#define NOTE_D2  73
+#define NOTE_DS2 78
+#define NOTE_E2  82
+#define NOTE_F2  87
+#define NOTE_FS2 93
+#define NOTE_G2  98
+#define NOTE_GS2 104
+#define NOTE_A2  110
+#define NOTE_AS2 117
+#define NOTE_B2  123
+#define NOTE_C3  131
+#define NOTE_CS3 139
+#define NOTE_D3  147
+#define NOTE_DS3 156
+#define NOTE_E3  165
+#define NOTE_F3  175
+#define NOTE_FS3 185
+#define NOTE_G3  196
+#define NOTE_GS3 208
+#define NOTE_A3  220
+#define NOTE_AS3 233
+#define NOTE_B3  247
+#define NOTE_C4  262
+#define NOTE_CS4 277
+#define NOTE_D4  294
+#define NOTE_DS4 311
+#define NOTE_E4  330
+#define NOTE_F4  349
+#define NOTE_FS4 370
+#define NOTE_G4  392
+#define NOTE_GS4 415
+#define NOTE_A4  440
+#define NOTE_AS4 466
+#define NOTE_B4  494
+#define NOTE_C5  523
+#define NOTE_CS5 554
+#define NOTE_D5  587
+#define NOTE_DS5 622
+#define NOTE_E5  659
+#define NOTE_F5  698
+#define NOTE_FS5 740
+#define NOTE_G5  784
+#define NOTE_GS5 831
+#define NOTE_A5  880
+#define NOTE_AS5 932
+#define NOTE_B5  988
+#define NOTE_C6  1047
+#define NOTE_CS6 1109
+#define NOTE_D6  1175
+#define NOTE_DS6 1245
+#define NOTE_E6  1319
+#define NOTE_F6  1397
+#define NOTE_FS6 1480
+#define NOTE_G6  1568
+#define NOTE_GS6 1661
+#define NOTE_A6  1760
+#define NOTE_AS6 1865
+#define NOTE_B6  1976
+#define NOTE_C7  2093
+#define NOTE_CS7 2217
+#define NOTE_D7  2349
+#define NOTE_DS7 2489
+#define NOTE_E7  2637
+#define NOTE_F7  2794
+#define NOTE_FS7 2960
+#define NOTE_G7  3136
+#define NOTE_GS7 3322
+#define NOTE_A7  3520
+#define NOTE_AS7 3729
+#define NOTE_B7  3951
+#define NOTE_C8  4186
+#define NOTE_CS8 4435
+#define NOTE_D8  4699
+#define NOTE_DS8 4978
+#define REST      0
+
 //  pino dos botoes
 unsigned int pinoBotao[4] = {A1, A2, A3, A4};
 
 //  pino dos leds
-unsigned int pinoLed[4] = {9, 8, 7, 6};
+unsigned int pinoLed[4] = {4,3,5,2};
 
 //  pino do buzzer
-unsigned int pinoBuzzer = 5;
+unsigned int pinoBuzzer = 6;
 
 //  conexao serial entre arduinos
 SoftwareSerial link(11, 10);
@@ -49,8 +140,7 @@ enum modosJogo
 {
   DESLIGADO = 0,
   TRADICIONAL,
-  PROGRESSIVO,
-  GENIUS
+  PROGRESSIVO
 };
 
 //  botoes
@@ -90,16 +180,11 @@ void iniciarJogo();
 void jogoTradicional1P();
 //  jogo progressivo com 1 jogadores
 void jogoProgressivo1P();
-//  jogo genius com 1 jogadores
-void jogoGenius1P();
 
 //  jogo tradicional com 2 jogadores
 void jogoTradicional2P();
 //  jogo progressivo com 2 jogadores
 void jogoProgressivo2P();
-//  jogo genius com 2 jogadores
-void jogoGenius2P();
-
 /*===================================================================================
                                   Rotinas de execucao
 ===================================================================================*/
@@ -138,9 +223,15 @@ int botaoPressionado()
   return NENHUM;
 }
 
-void somAcerto() {}
+void somAcerto() {
+  int divider, noteDuration;
+  tone(pinoBuzzer, NOTE_A1, 100);
+}
 
-void somErro() {}
+void somErro() {
+  int divider, noteDuration;
+  tone(pinoBuzzer, NOTE_G4, 100);
+}
 
 void inicializarArduinos()
 {
@@ -192,13 +283,6 @@ void escolherModo()
   lcd.setCursor(3,1);
   lcd.print("progressivo");
   delay(2000);
-  
-  lcd.clear();
-  lcd.setCursor(5,0);
-  lcd.print("[azul]");
-  lcd.setCursor(5,1);
-  lcd.print("genius");
-  delay(2000);
 
   lcd.clear();
   lcd.setCursor(0,0);
@@ -207,7 +291,7 @@ void escolherModo()
   lcd.print("de jogo");
 
   int botao = NENHUM;
-  while (botao == NENHUM || botao == VERMELHO) {
+  while (botao == NENHUM || botao == VERMELHO || botao == AZUL) {
     botao = botaoPressionado();
   }
 
@@ -217,9 +301,6 @@ void escolherModo()
       break;
     case VERDE:
       modo[jogador] = PROGRESSIVO;
-      break;
-    case AZUL:
-      modo[jogador] = GENIUS;
       break;
   }
   link.write(modo[jogador]);
@@ -250,9 +331,6 @@ void iniciarJogo()
       case PROGRESSIVO:
         jogoProgressivo1P();
         break;
-      case GENIUS:
-        jogoGenius1P();
-        break;
     }
   } else {
     switch (modo[jogador]) {
@@ -261,9 +339,6 @@ void iniciarJogo()
         break;
       case PROGRESSIVO:
         jogoProgressivo2P();
-        break;
-      case GENIUS:
-        jogoGenius2P();
         break;
     }
   }
@@ -306,7 +381,7 @@ void jogoTradicional1P()
       //  se o botao pressionado for o sorteado
       if (botaoPressionado() == botaoEscolhido) {
         acertou = true;
-        pontuacao += 1u;
+        pontuacao += 1;
         somAcerto();
         digitalWrite(LED_BUILTIN, LOW);
         break;
@@ -323,6 +398,7 @@ void jogoTradicional1P()
       lcd.setCursor(7, 1);
       lcd.print(pontuacaoString);
     }
+    digitalWrite(pinoLed[botaoEscolhido], LOW);
   }
 
   lcd.clear();
@@ -350,7 +426,7 @@ void jogoProgressivo1P()
   lcd.print("progressivo");
   delay(1500);
 
-  int pontuacao = -1;
+  int pontuacao = 0;
   lcd.clear();
   lcd.setCursor(3, 0);
   lcd.print("Pontuacao");
@@ -377,7 +453,7 @@ void jogoProgressivo1P()
       //  se o botao pressionado for o sorteado
       if (botaoPressionado() == botaoEscolhido) {
         acertou = true;
-        pontuacao += 1u;
+        pontuacao += 1;
         somAcerto();
         digitalWrite(LED_BUILTIN, LOW);
         if (tempoBotaoProgresivo > 1000u /*ms*/) {
@@ -399,6 +475,7 @@ void jogoProgressivo1P()
       lcd.setCursor(7, 1);
       lcd.print(pontuacaoString);
     }
+    digitalWrite(pinoLed[botaoEscolhido], LOW);
   }
 
   lcd.clear();
@@ -417,98 +494,95 @@ void jogoProgressivo1P()
   delay(10000);
 }
 
-void jogoGenius1P()
+void jogoTradicional2P()
 {
   lcd.clear();
   lcd.setCursor(6, 0);
   lcd.print("modo");
-  lcd.setCursor(5, 1);
-  lcd.print("genius");
+  lcd.setCursor(3, 1);
+  lcd.print("tradicional");
   delay(1500);
 
-  unsigned int pontuacao = 0, maiorPontuacao = pontuacao, pontuacaoMaxima = 25u;
-  char pontuacaoString[16];
-  sprintf(pontuacaoString, "%u", maiorPontuacao);
+  int pontuacao[2] = {0, 0};
   lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Maior pontuacao");
+  lcd.setCursor(3, 0);
+  lcd.print("Pontuacao");
   lcd.setCursor(7, 1);
-  lcd.print(pontuacaoString);
+  lcd.print("0");
   delay(100);
 
   //  enquanto houver tempo execute o jogo
+  char pontuacaoString[16];
   bool acertou;
-  int botaoEscolhido[pontuacaoMaxima];
-  unsigned int i;
+  int botaoEscolhido;
+  link.write(PRONTO);
+  while (!link.available()) {/*aguarde*/}
+  link.read();
   unsigned long int tTurno, tempoInicial = millis();
-  while (millis() - tempoInicial < 2 * tempoMaximo && maiorPontuacao < pontuacaoMaxima) {
+  while (millis() - tempoInicial < tempoMaximo) {
     //  escolher um botão aleatório
-    botaoEscolhido[pontuacao] = random(0, 3);
-    for (i = 0; i < pontuacao + 1; i++) {
-      digitalWrite(pinoLed[botaoEscolhido[i]], HIGH);
-      delay(1000 /*ms*/);
-      digitalWrite(pinoLed[botaoEscolhido[i]], LOW);
-    }
-    acertou = true;
+    botaoEscolhido = random(0, 3);
+    digitalWrite(pinoLed[botaoEscolhido], HIGH);
+    acertou = false;
 
-    //  aguardar o jogador pressionar os botões
-    for (i = 0; i < pontuacao + 1; i++) {
-      tTurno = millis();
-      digitalWrite(LED_BUILTIN, HIGH);
-      while (millis() - tTurno < tempoBotao) {
-        //  se o botao pressionado for o sorteado
-        if (botaoPressionado() == botaoEscolhido[i]) {
-          acertou = acertou;
-          digitalWrite(LED_BUILTIN, LOW);
-          break;
-        } else {
-          acertou = false;
-          somErro();
-          pontuacao = 0u; //  reiniciar pontuação
-          break;
-        }
+    //  aguardar o jogador pressionar o botão
+    digitalWrite(LED_BUILTIN, HIGH);
+    tTurno = millis();
+    while (millis() - tTurno < tempoBotao) {
+      //  se o botao pressionado for o sorteado
+      if (botaoPressionado() == botaoEscolhido) {
+        acertou = true;
+        pontuacao[0] += 1;
+        somAcerto();
+        digitalWrite(LED_BUILTIN, LOW);
+        break;
       }
     }
-    if (acertou) {
-      pontuacao += 1u;
-      somAcerto();
-      if (pontuacao > maiorPontuacao) {
-        maiorPontuacao = pontuacao;
-
-        sprintf(pontuacaoString, "%u", maiorPontuacao);
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Maior pontuacao");
-        lcd.setCursor(7, 1);
-        lcd.print(pontuacaoString);
-      }
+    //  se o botao sorteado nao foi pressionado
+    if (!acertou) {
+      somErro();
+    } else {
+      sprintf(pontuacaoString, "%d", pontuacao[0]);
+      lcd.clear();
+      lcd.setCursor(3, 0);
+      lcd.print("Pontuacao");
+      lcd.setCursor(7, 1);
+      lcd.print(pontuacaoString);
     }
   }
-
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Tempo esgotado!");
   lcd.setCursor(3, 1);
   lcd.print("Fim de jogo");
-  delay(2000);
-
-  sprintf(pontuacaoString, "%u", maiorPontuacao);
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Maior pontuacao");
-  lcd.setCursor(7, 1);
-  lcd.print(pontuacaoString);
-  delay(10000);
-}
-
-void jogoTradicional2P()
-{
-  lcd.clear();
-  lcd.setCursor(3, 0);
-  lcd.print("modo versus");
-  lcd.setCursor(3, 1);
-  lcd.print("tradicional");
   delay(1500);
+  
+  link.write(pontuacao[0]);
+  while (!link.available()) {/*aguarde*/}
+  pontuacao[1] = link.read();
+
+  if (pontuacao[0] == pontuacao[1]) {
+    lcd.clear();
+    lcd.setCursor(5, 0);
+    lcd.print("EMPATE");
+    lcd.setCursor(4, 1);
+    lcd.print("Parabens!");
+    delay(2000);
+  } else if (pontuacao[0] > pontuacao[1]) {
+    lcd.clear();
+    lcd.setCursor(4, 0);
+    lcd.print("VITORIA");
+    lcd.setCursor(4, 1);
+    lcd.print("Parabens!");
+    delay(2000);
+  } else {
+    lcd.clear();
+    lcd.setCursor(4, 0);
+    lcd.print("DERROTA");
+    lcd.setCursor(2, 1);
+    lcd.print("Triste! ;--;");
+    delay(2000);
+  }
 }
 
 void jogoProgressivo2P()
@@ -519,14 +593,91 @@ void jogoProgressivo2P()
   lcd.setCursor(3, 1);
   lcd.print("progressivo");
   delay(1500);
-}
 
-void jogoGenius2P()
-{
+  int pontuacao[2] = {0, 0};
   lcd.clear();
   lcd.setCursor(3, 0);
-  lcd.print("modo versus");
-  lcd.setCursor(5, 1);
-  lcd.print("genius");
+  lcd.print("Pontuacao");
+  lcd.setCursor(7, 1);
+  lcd.print("0");
+  delay(100);
+
+  //  enquanto houver tempo execute o jogo
+  char pontuacaoString[16];
+  bool acertou;
+  int botaoEscolhido;
+  unsigned long tempoBotaoProgresivo = tempoBotao;
+  link.write(PRONTO);
+  while (!link.available()) {/*aguarde*/}
+  link.read();
+  unsigned long int tTurno, tempoInicial = millis();
+  while (millis() - tempoInicial < tempoMaximo) {
+    //  escolher um botão aleatório
+    botaoEscolhido = random(0, 3);
+    digitalWrite(pinoLed[botaoEscolhido], HIGH);
+    acertou = false;
+
+    //  aguardar o jogador pressionar o botão
+    digitalWrite(LED_BUILTIN, HIGH);
+    tTurno = millis();
+    while (millis() - tTurno < tempoBotaoProgresivo) {
+      //  se o botao pressionado for o sorteado
+      if (botaoPressionado() == botaoEscolhido) {
+        acertou = true;
+        pontuacao[0] += 1;
+        somAcerto();
+        digitalWrite(LED_BUILTIN, LOW);
+        if (tempoBotaoProgresivo > 1000u /*ms*/) {
+          tempoBotaoProgresivo -= 100u /*ms*/;//  diminuir o tempo de espera
+        } else if (tempoBotaoProgresivo > 500u /*ms*/) {
+          tempoBotaoProgresivo -= 50u /*ms*/; //  diminuir o tempo de espera
+        }
+        break;
+      }
+    }
+    //  se o botao sorteado nao foi pressionado
+    if (!acertou) {
+      somErro();
+    } else {
+      sprintf(pontuacaoString, "%d", pontuacao[0]);
+      lcd.clear();
+      lcd.setCursor(3, 0);
+      lcd.print("Pontuacao");
+      lcd.setCursor(7, 1);
+      lcd.print(pontuacaoString);
+    }
+  }
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Tempo esgotado!");
+  lcd.setCursor(3, 1);
+  lcd.print("Fim de jogo");
   delay(1500);
+  
+  link.write(pontuacao[0]);
+  while (!link.available()) {/*aguarde*/}
+  pontuacao[1] = link.read();
+
+  if (pontuacao[0] == pontuacao[1]) {
+    lcd.clear();
+    lcd.setCursor(5, 0);
+    lcd.print("EMPATE");
+    lcd.setCursor(4, 1);
+    lcd.print("Parabens!");
+    delay(2000);
+  } else if (pontuacao[0] > pontuacao[1]) {
+    lcd.clear();
+    lcd.setCursor(4, 0);
+    lcd.print("VITORIA");
+    lcd.setCursor(4, 1);
+    lcd.print("Parabens!");
+    delay(2000);
+  } else {
+    lcd.clear();
+    lcd.setCursor(4, 0);
+    lcd.print("DERROTA");
+    lcd.setCursor(2, 1);
+    lcd.print("Triste! ;--;");
+    delay(2000);
+  }
 }
