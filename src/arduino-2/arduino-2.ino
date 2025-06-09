@@ -113,7 +113,7 @@
 unsigned int pinoBotao[4] = {A1, A2, A3, A4};
 
 //  pino dos leds
-unsigned int pinoLed[44] = {4,3,5,2};
+unsigned int pinoLed[44] = {4,5,3,2};
 
 //  pino do buzzer
 unsigned int pinoBuzzer = 6;
@@ -414,6 +414,7 @@ void jogoTradicional2P()
       lcd.setCursor(7, 1);
       lcd.print(pontuacaoString);
     }
+    digitalWrite(pinoLed[botaoEscolhido], LOW);
   }
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -511,6 +512,7 @@ void jogoProgressivo2P()
       lcd.setCursor(7, 1);
       lcd.print(pontuacaoString);
     }
+    digitalWrite(pinoLed[botaoEscolhido], LOW);
   }
   lcd.clear();
   lcd.setCursor(0, 0);
