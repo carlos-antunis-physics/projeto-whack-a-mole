@@ -10,7 +10,7 @@
 
 >   **Autores:** [Carlos](https://github.com/carlos-antunis-physics/), [Filipe](https://github.com/FilipeFortaleza), Flavia, [Giovanna](https://github.com/giovannaspace), [Lucitania](https://github.com/Lucii-s), [Mirian](https://github.com/miriangomes).
 
-Software do **projeto do jogo Whack-a-mole** (esmague a marmota), desenvolvido numa colaboração entre eu, [Filipe](https://github.com/FilipeFortaleza), Flavia, [Giovanna](https://github.com/giovannaspace), [Lucitania](https://github.com/Lucii-s) e [Mirian](https://github.com/miriangomes), como atividade avaliativa da **disciplina de IEC** do 1⁰ período do curso de Engenharia da Computação ministrado no semestre 2024.2 no IC - UFAL pelo professor Thiago D. Cordeiro. 
+Software do **projeto do jogo Whack-a-mole** (esmague a marmota), desenvolvido numa colaboração entre mim, [Filipe](https://github.com/FilipeFortaleza), Flavia, [Giovanna](https://github.com/giovannaspace), [Lucitania](https://github.com/Lucii-s) e [Mirian](https://github.com/miriangomes), como atividade avaliativa da **disciplina de IEC** do 1⁰ período do curso de Engenharia da Computação ministrado no semestre 2024.2 no IC - UFAL pelo professor Thiago D. Cordeiro. 
 
 ##  Licença
 
