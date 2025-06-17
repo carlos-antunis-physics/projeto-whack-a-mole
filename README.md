@@ -1,6 +1,6 @@
 <div align = "center">
 
-[![UFAL logo](./UFAL.png)](#---)
+[![UFAL logo](https://github.com/carlos-antunis-physics/carlos-antunis-physics/blob/main/assets/UFAL.png?raw=true)](#---)
 # Projeto whack-a-mole
 
 </div>
